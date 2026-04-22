@@ -11,6 +11,7 @@ class OrderStatus(models.TextChoices):
     CANCELLED = 'cancelled', 'CANCELLED'
 
 
+
 class PromoCode(models.Model):
     code = models.CharField(max_length=50, unique=True)
 

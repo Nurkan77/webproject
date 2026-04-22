@@ -8,7 +8,6 @@ class Migration(migrations.Migration):
     dependencies = [
         ('orders', '0003_alter_order_options_order_user_and_more'),
     ]
-
     operations = [
         migrations.CreateModel(
             name='PromoCode',
