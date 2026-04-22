@@ -1,0 +1,47 @@
+<!-- #st -->
+@if (!hideNavbar) {
+  <nav class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-brand" routerLink="/">ShopEasy</h1>
+
+      <div class="navbar-actions">
+        <ul class="navbar-links">
+          <li><a routerLink="/products" routerLinkActive="active">Products</a></li>
+          <li><a routerLink="/wishlist" routerLinkActive="active">Wishlist</a></li>
+          <li><a routerLink="/cart" routerLinkActive="active">Cart</a></li>
+          <li><a routerLink="/orders" routerLinkActive="active">Orders</a></li>
+        </ul>
+
+        @if (authService.isLoggedIn() && currentUser) {
+          <!-- Показываем, кто залогинен, и сколько у него бонусов -->
+          <div class="navbar-user">
+            <a routerLink="/profile" class="navbar-user__link" routerLinkActive="active-user">
+              <span class="navbar-user__name">Profile</span>
+            </a>
+            <span class="navbar-user__bonus">Bonus: {{ currentUser.bonusBalance }}</span>
+            <button class="btn-logout-nav" (click)="onLogout()">Log out</button>
+          </div>
+        } @else {
+          <!-- Для публичного каталога показываем быстрые ссылки на вход и регистрацию. -->
+          <div class="navbar-user">
+            <a routerLink="/login" class="navbar-user__link" routerLinkActive="active-user">Log in</a>
+            <a routerLink="/register" class="btn-primary">Register</a>
+          </div>
+        }
+      </div>
+    </div>
+  </nav>
+}
+
+<div class="toast-stack" aria-live="polite" aria-atomic="true">
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div class="toast toast-success">
+      <span>{{ toast.text }}</span>
+      <button type="button" class="toast-close" (click)="toastService.dismiss(toast.id)" aria-label="Dismiss notification">
+        ×
+      </button>
+    </div>
+  }
+</div>
+
+<router-outlet></router-outlet>

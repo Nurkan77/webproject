@@ -1,0 +1,16 @@
+{
+  "name": "shopeasy",
+  "private": true,
+  "scripts": {
+    "backend:migrate": ".venv/bin/python backend/manage.py migrate",
+    "backend:check": ".venv/bin/python backend/manage.py check",
+    "backend:start": ".venv/bin/python backend/manage.py runserver 8000",
+    "frontend:install": "npm install --prefix frontend",
+    "frontend:start": "npm start --prefix frontend",
+    "frontend:build": "npm run build --prefix frontend"
+  },
+  "engines": {
+    "node": ">=20.19 <25",
+    "npm": ">=10"
+  }
+}

@@ -1,0 +1,156 @@
+<!-- #st -->
+<section class="container-custom">
+  <header class="page-header text-center">
+    <h1>Product catalog</h1>
+    <p>Electronics, clothing, books, sports, and home picks in one storefront.</p>
+  </header>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  <!-- Верхняя панель управляет фильтрацией и сортировкой каталога. -->
+  <div class="filters-bar modern-card">
+    <div class="filter-group">
+      <label>Category</label>
+      <select [(ngModel)]="selectedCategoryId" (change)="applyFilters()">
+        <option value="">All categories</option>
+        @for (cat of categories; track cat.id) {
+          <option [value]="cat.id">{{ cat.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group search-box">
+      <label>Search</label>
+      <input type="text" [(ngModel)]="searchTerm" (input)="applyFilters()" placeholder="Name, brand, or keyword...">
+    </div>
+
+    <div class="filter-group compact-field">
+      <label>Min price</label>
+      <input type="number" [(ngModel)]="minPrice" (change)="applyFilters()" min="0" placeholder="0">
+    </div>
+
+    <div class="filter-group compact-field">
+      <label>Max price</label>
+      <input type="number" [(ngModel)]="maxPrice" (change)="applyFilters()" min="0" placeholder="2000">
+    </div>
+
+    <div class="filter-group compact-field">
+      <label>Sort by</label>
+      <select [(ngModel)]="selectedOrdering" (change)="applyFilters()">
+        <option value="newest">Newest</option>
+        <option value="price">Price: low to high</option>
+        <option value="-price">Price: high to low</option>
+        <option value="name">Name: A to Z</option>
+        <option value="-name">Name: Z to A</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
+
+    <label class="sale-toggle">
+      <input type="checkbox" [(ngModel)]="onlyOnSale" (change)="applyFilters()">
+      <span>Sale only</span>
+    </label>
+
+    <button class="btn-secondary" type="button" (click)="resetFilters()">Reset</button>
+  </div>
+
+  @if (loading) {
+    <div class="modern-card empty-state">
+      <p>Loading catalog...</p>
+    </div>
+  } @else {
+    <div class="results-meta">
+      <p>{{ totalCount }} items found</p>
+      @if (totalPages > 1) {
+        <p>Page {{ currentPage }} of {{ totalPages }}</p>
+      }
+    </div>
+  }
+
+  @if (!loading && products.length === 0) {
+    <div class="empty-state modern-card">
+      <p>Unfortunately, nothing was found</p>
+    </div>
+  } @else if (!loading) {
+    <div class="products-grid">
+      @for (product of products; track product.id) {
+        <article class="modern-card product-card">
+          @if (product.isOnSale) {
+            <span class="product-badge sale">Sale</span>
+          }
+
+          <div class="product-img-wrapper" (click)="viewProduct(product.id)">
+            <img [src]="getProductImage(product)" [attr.data-fallback-src]="getProductFallback(product)" [alt]="product.name" loading="lazy" (error)="onImageError($event)">
+          </div>
+
+          <div class="product-content">
+            <span class="category-tag">{{ product.category.name }}</span>
+            <h3 class="product-title">{{ product.name }}</h3>
+            <p class="product-brand">{{ product.brand }}</p>
+
+            <div class="rating-row">
+              <span class="stars">{{ getStars(product.rating) }}</span>
+              <span>{{ product.rating | number:'1.1-1' }} · {{ product.reviewCount }} reviews</span>
+            </div>
+
+            <p class="product-description">{{ product.description }}</p>
+
+            <div class="price-row">
+              <p class="product-price">{{ product.price | number:'1.0-0' }} $</p>
+              @if (product.oldPrice) {
+                <span class="product-old-price">{{ product.oldPrice | number:'1.0-0' }} $</span>
+              }
+            </div>
+
+            <div class="product-status" [class.out-of-stock]="!product.inStock">
+              {{ product.inStock ? 'In stock' : 'Out of stock' }}
+            </div>
+          </div>
+
+          <div class="product-footer">
+            <button class="btn-secondary flex-1" type="button" (click)="viewProduct(product.id)">
+              View details
+            </button>
+            <button class="btn-primary flex-1" (click)="addToCart(product)" [disabled]="!product.inStock">
+              Add to cart
+            </button>
+            <button
+              class="btn-wishlist"
+              [class.active]="isWishlisted(product.id)"
+              (click)="toggleWishlist(product.id)"
+              [title]="isWishlisted(product.id) ? 'Remove from wishlist' : 'Add to wishlist'">
+              {{ isWishlisted(product.id) ? '♥' : '♡' }}
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+
+    <!-- Pagination controls -->
+    @if (totalPages > 1) {
+      <nav class="pagination">
+        <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1" title="First page">«</button>
+        <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1" title="Previous page">‹</button>
+
+        @if (pageNumbers[0] > 1) {
+          <span class="page-ellipsis">…</span>
+        }
+
+        @for (page of pageNumbers; track page) {
+          <button class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+            {{ page }}
+          </button>
+        }
+
+        @if (pageNumbers[pageNumbers.length - 1] < totalPages) {
+          <span class="page-ellipsis">…</span>
+        }
+
+        <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages" title="Next page">›</button>
+        <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" title="Last page">»</button>
+      </nav>
+    }
+  }
+</section>
