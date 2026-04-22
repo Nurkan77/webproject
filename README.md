@@ -145,6 +145,6 @@ Product and category management for staff users is available at `/admin`:
 
 | Name                       | Module |
 |----------------------------|---|
-| ** Khissabiddinov Diyorbek **         | Profile · Wishlist · Navigation · Auth UI |
-| ** Khissabiddinov Diyorbek **       | Products · Categories · Admin · Search/Filter · Reviews |
-| ** Khandilda Nurasyl ** | Orders · Statuses · Checkout · Promo Codes · Bonus System |
+| ** Khissabiddinov Diyorbek **         | Profile · Wishlist · Navigation · Products · Categories · Admin · Auth UI |
+
+| ** Khandilda Nurasyl ** | Orders · Statuses · Checkout · Promo Codes · Bonus System · Search/Filter · Reviews|
