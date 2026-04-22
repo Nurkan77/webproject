@@ -11,6 +11,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { AuthGuard } from './guards/auth.guard';
 
+
 export const routes: Routes = [
   // публичные маршруты
   { path: 'login',    component: LoginComponent },

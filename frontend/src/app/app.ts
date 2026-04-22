@@ -13,6 +13,7 @@ import { ToastService } from './service/toast.service';
 export class App {
   protected readonly title = signal('frontend');
 
+  
   constructor(
     public authService: AuthService,
     public router: Router,
