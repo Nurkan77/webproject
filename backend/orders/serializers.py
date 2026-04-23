@@ -104,10 +104,11 @@ class CheckoutPreviewSerializer(serializers.Serializer):
     items = CartItemSerializer(many=True)
     promoCode = serializers.CharField(max_length=50, required=False, allow_blank=True)
     bonusToSpend = serializers.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        required=False,
-        min_value=Decimal('0.00'),
+    max_digits=10,
+    decimal_places=2,
+    required=False,
+    min_value=Decimal('0.00'),
+    default=Decimal('0.00'),
     )
 
     def validate_items(self, value):
