@@ -16,12 +16,15 @@ class OrderAdmin(admin.ModelAdmin):
         'promoCode',
         'subtotal',
         'discountAmount',
+        'spentBonus',
         'earnedBonus',
+        'bonusAwarded',
         'total',
         'createdAt',
     )
     list_filter = ('status', 'createdAt')
     search_fields = ('id', 'customerName', 'customerPhone', 'promoCode', 'user__username')
+    readonly_fields = ('bonusAwarded',)
 
     def save_model(self, request, obj, form, change):
         # Логика начисления бонусов перенесена в admin-обновление статуса заказа:
@@ -41,6 +44,7 @@ class OrderAdmin(admin.ModelAdmin):
             return
 
         profile, _ = UserProfile.objects.get_or_create(user=obj.user)
+
         # Начисляем бонусы только один раз при первом переходе заказа в delivered.
         if obj.status == OrderStatus.DELIVERED and not previous_bonus_awarded and not obj.bonusAwarded:
             profile.bonusBalance = (
@@ -51,6 +55,7 @@ class OrderAdmin(admin.ModelAdmin):
             obj.bonusAwarded = True
             obj.save(update_fields=['bonusAwarded'])
             return
+
         # Если заказ раньше был delivered, а потом статус изменили назад,
         # нужно откатить начисленные бонусы, чтобы баланс оставался корректным.
         if previous_status == OrderStatus.DELIVERED and obj.status != OrderStatus.DELIVERED and obj.bonusAwarded:
